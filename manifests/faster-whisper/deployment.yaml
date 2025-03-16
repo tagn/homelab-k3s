@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: faster-whisper
+  labels:
+    app: faster-whisper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: faster-whisper
+  template:
+    metadata:
+      labels:
+        app: faster-whisper
+    spec:
+      containers:
+        - name: faster-whisper
+          image: lscr.io/linuxserver/faster-whisper:latest
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "Etc/UTC"
+            - name: WHISPER_MODEL
+              value: "tiny-int8"
+            - name: WHISPER_BEAM
+              value: "1"
+            - name: WHISPER_LANG
+              value: "en"
+          volumeMounts:
+            - name: whisper-data
+              mountPath: /config
+          ports:
+            - containerPort: 10301
+      volumes:
+        - name: whisper-data
+          hostPath:
+            path: /home/tagne/containers/faster-whisper
+            type: Directory
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: faster-whisper
+spec:
+  type: LoadBalancer
+  selector:
+    app: faster-whisper
+  ports:
+    - protocol: TCP
+      port: 10300
+      targetPort: 10300
