@@ -34,7 +34,7 @@ spec:
             - name: whisper-data
               mountPath: /config
           ports:
-            - containerPort: 10301
+            - containerPort: 10300
       volumes:
         - name: whisper-data
           hostPath:
@@ -52,5 +52,5 @@ spec:
     app: faster-whisper
   ports:
     - protocol: TCP
-      port: 10300
+      port: 10301
       targetPort: 10300
