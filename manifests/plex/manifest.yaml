@@ -14,7 +14,7 @@ spec:
       labels:
         app: plex
     spec:
-      hostNetwork: true  # Equivalent to network_mode: host
+      hostNetwork: true
       containers:
         - name: plex
           image: lscr.io/linuxserver/plex:latest
@@ -27,8 +27,6 @@ spec:
               value: "America/New_York"
             - name: VERSION
               value: "docker"
-            - name: PLEX_CLAIM
-              value: ""  # Optional, replace with actual claim token if needed
           volumeMounts:
             - name: plex-config
               mountPath: /config
@@ -36,7 +34,6 @@ spec:
               mountPath: /tv
             - name: movies
               mountPath: /movies
-          restartPolicy: Always
       volumes:
         - name: plex-config
           hostPath:
@@ -44,9 +41,9 @@ spec:
             type: Directory
         - name: tv-series
           hostPath:
-            path: "/mnt/256flash/TV Shows"
+            path: "/mnt/256flash/Media/TV Shows"
             type: Directory
         - name: movies
           hostPath:
-            path: /mnt/256flash/Movies
+            path: /mnt/256flash/Media/Movies
             type: Directory
