@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: plex
+  labels:
+    app: plex
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: plex
+  template:
+    metadata:
+      labels:
+        app: plex
+    spec:
+      hostNetwork: true  # Equivalent to network_mode: host
+      containers:
+        - name: plex
+          image: lscr.io/linuxserver/plex:latest
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "America/New_York"
+            - name: VERSION
+              value: "docker"
+            - name: PLEX_CLAIM
+              value: ""  # Optional, replace with actual claim token if needed
+          volumeMounts:
+            - name: plex-config
+              mountPath: /config
+            - name: tv-series
+              mountPath: /tv
+            - name: movies
+              mountPath: /movies
+          restartPolicy: Always
+      volumes:
+        - name: plex-config
+          hostPath:
+            path: /home/tagne/containers/plex
+            type: Directory
+        - name: tv-series
+          hostPath:
+            path: "/mnt/256flash/TV Shows"
+            type: Directory
+        - name: movies
+          hostPath:
+            path: /mnt/256flash/Movies
+            type: Directory
